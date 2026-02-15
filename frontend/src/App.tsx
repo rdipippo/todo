@@ -10,6 +10,7 @@ import {
   HomeScreen,
   ChangePasswordScreen,
   AdminScreen,
+  CategoriesScreen,
 } from './screens';
 import { Spinner } from './components';
 import './i18n';
@@ -124,6 +125,14 @@ const AppRoutes: React.FC = () => {
         element={
           <ProtectedRoute>
             <ChangePasswordScreen />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/categories"
+        element={
+          <ProtectedRoute>
+            <CategoriesScreen />
           </ProtectedRoute>
         }
       />

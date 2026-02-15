@@ -17,4 +17,7 @@ export {
   changePasswordValidation,
   createTodoValidation,
   updateTodoValidation,
+  reorderTodosValidation,
+  createCategoryValidation,
+  updateCategoryValidation,
 } from './validation.middleware';

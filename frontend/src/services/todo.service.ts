@@ -3,19 +3,25 @@ import api from './api';
 export interface Todo {
   id: number;
   user_id: number;
+  category_id: number | null;
   title: string;
   completed: boolean;
+  percent_complete: number;
+  sort_order: number;
   created_at: string;
   updated_at: string;
 }
 
 export interface CreateTodoData {
   title: string;
+  category_id?: number | null;
 }
 
 export interface UpdateTodoData {
   title?: string;
   completed?: boolean;
+  percent_complete?: number;
+  category_id?: number | null;
 }
 
 export const todoService = {
@@ -36,6 +42,10 @@ export const todoService = {
 
   async deleteTodo(id: number): Promise<void> {
     await api.delete(`/todos/${id}`);
+  },
+
+  async reorderTodos(todoIds: number[]): Promise<void> {
+    await api.put('/todos/reorder', { todoIds });
   },
 };
 

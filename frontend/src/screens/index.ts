@@ -6,3 +6,4 @@ export { VerifyEmailScreen } from './VerifyEmailScreen';
 export { HomeScreen } from './HomeScreen';
 export { ChangePasswordScreen } from './ChangePasswordScreen';
 export { AdminScreen } from './AdminScreen';
+export { CategoriesScreen } from './CategoriesScreen';

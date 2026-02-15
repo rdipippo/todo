@@ -95,8 +95,17 @@
   accent-color: var(--color-primary);
 }
 
-.todo-title {
+/* Todo Content (title + badge) */
+.todo-content {
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.todo-title {
   font-size: var(--font-size-md);
   color: var(--color-text-primary);
   word-break: break-word;
@@ -130,9 +139,219 @@
   cursor: not-allowed;
 }
 
+/* Move Buttons */
+.todo-move-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.todo-move-btn {
+  background: none;
+  border: none;
+  padding: 0 var(--spacing-xs);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  transition: all var(--transition-fast);
+  line-height: 1;
+}
+
+.todo-move-btn:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.todo-move-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* Edit Button */
+.todo-edit-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: var(--spacing-xs);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  transition: all var(--transition-fast);
+  line-height: 1;
+}
+
+.todo-edit-btn:hover {
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+.todo-edit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Inline Edit Form */
+.todo-edit-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  min-width: 0;
+}
+
+.todo-edit-title-input {
+  width: 100%;
+  font-size: var(--font-size-sm);
+}
+
+.todo-edit-bottom-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.todo-edit-category-select {
+  max-width: 160px;
+  height: 36px;
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+}
+
+.todo-edit-actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.todo-save-btn,
+.todo-cancel-btn {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.todo-save-btn {
+  color: var(--color-primary);
+}
+
+.todo-save-btn:hover {
+  background-color: var(--color-primary-light);
+}
+
+.todo-save-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.todo-cancel-btn {
+  color: var(--color-text-tertiary);
+}
+
+.todo-cancel-btn:hover {
+  color: var(--color-text-primary);
+  background-color: var(--color-background);
+}
+
+.todo-cancel-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Percent Complete - Display */
+.todo-percent-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.todo-percent-bar {
+  width: 60px;
+  height: 6px;
+  background-color: var(--color-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.todo-percent-bar-fill {
+  height: 100%;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+  transition: width var(--transition-fast);
+}
+
+.todo-percent-text {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  min-width: 32px;
+}
+
+/* Percent Complete - Edit */
+.todo-percent-edit {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  flex-shrink: 0;
+}
+
+.todo-percent-slider {
+  width: 80px;
+  accent-color: var(--color-primary);
+}
+
+.todo-percent-label {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  min-width: 32px;
+}
+
+/* Category Badge on Todo Items */
+.todo-category-badge {
+  display: inline-block;
+  padding: 1px var(--spacing-xs);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  color: #fff;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/* Category Select in Add Form */
+.todo-category-select {
+  max-width: 160px;
+  flex-shrink: 0;
+}
+
+/* Category Filter Row */
+.category-filters {
+  flex-wrap: wrap;
+}
+
+.filter-category-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
   .todo-input-row {
     flex-direction: column;
+  }
+
+  .todo-category-select {
+    max-width: 100%;
   }
 }

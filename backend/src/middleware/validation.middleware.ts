@@ -118,6 +118,14 @@ export const createTodoValidation = [
     .withMessage('Title is required')
     .isLength({ max: 500 })
     .withMessage('Title must be 500 characters or fewer'),
+  body('category_id')
+    .optional({ values: 'null' })
+    .isInt({ min: 1 })
+    .withMessage('category_id must be a positive integer'),
+  body('percent_complete')
+    .optional()
+    .isInt({ min: 0, max: 100 })
+    .withMessage('percent_complete must be an integer between 0 and 100'),
   handleValidationErrors,
 ];
 
@@ -133,5 +141,52 @@ export const updateTodoValidation = [
     .optional()
     .isBoolean()
     .withMessage('completed must be a boolean'),
+  body('percent_complete')
+    .optional()
+    .isInt({ min: 0, max: 100 })
+    .withMessage('percent_complete must be an integer between 0 and 100'),
+  body('category_id')
+    .optional({ values: 'null' })
+    .isInt({ min: 1 })
+    .withMessage('category_id must be a positive integer'),
+  handleValidationErrors,
+];
+
+export const reorderTodosValidation = [
+  body('todoIds')
+    .isArray({ min: 1 })
+    .withMessage('todoIds must be a non-empty array'),
+  body('todoIds.*')
+    .isInt({ min: 1 })
+    .withMessage('Each todoId must be a positive integer'),
+  handleValidationErrors,
+];
+
+export const createCategoryValidation = [
+  body('name')
+    .trim()
+    .notEmpty()
+    .withMessage('Name is required')
+    .isLength({ max: 100 })
+    .withMessage('Name must be 100 characters or fewer'),
+  body('color')
+    .optional()
+    .matches(/^#[0-9a-fA-F]{6}$/)
+    .withMessage('Color must be a valid hex color (e.g. #ff0000)'),
+  handleValidationErrors,
+];
+
+export const updateCategoryValidation = [
+  body('name')
+    .optional()
+    .trim()
+    .notEmpty()
+    .withMessage('Name cannot be empty')
+    .isLength({ max: 100 })
+    .withMessage('Name must be 100 characters or fewer'),
+  body('color')
+    .optional()
+    .matches(/^#[0-9a-fA-F]{6}$/)
+    .withMessage('Color must be a valid hex color (e.g. #ff0000)'),
   handleValidationErrors,
 ];

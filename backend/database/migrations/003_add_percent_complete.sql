@@ -1,0 +1,1 @@
+ALTER TABLE todos ADD COLUMN percent_complete INT NOT NULL DEFAULT 0;
