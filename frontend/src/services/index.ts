@@ -9,6 +9,10 @@ export type {
   RegisterData,
   AuthResponse,
   ApiError,
+  GroupInfo,
+  GroupMember,
+  PendingInvite,
+  TaskPermissions,
 } from './auth.service';
 export type { Todo, CreateTodoData, UpdateTodoData } from './todo.service';
 export type { Category, CreateCategoryData, UpdateCategoryData } from './category.service';

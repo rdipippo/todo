@@ -18,11 +18,18 @@ CREATE TABLE IF NOT EXISTS users (
   email_verified BOOLEAN DEFAULT FALSE,
   role VARCHAR(20) DEFAULT 'user',
   enabled BOOLEAN DEFAULT TRUE,
+  group_owner_id INT DEFAULT NULL,
+  group_can_manage BOOLEAN DEFAULT FALSE,
+  perm_create_tasks BOOLEAN NOT NULL DEFAULT TRUE,
+  perm_edit_tasks BOOLEAN NOT NULL DEFAULT TRUE,
+  perm_delete_tasks BOOLEAN NOT NULL DEFAULT TRUE,
+  perm_assign_tasks BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_email (email),
   INDEX idx_created_at (created_at),
-  INDEX idx_role (role)
+  INDEX idx_role (role),
+  INDEX idx_group_owner_id (group_owner_id)
 ) ENGINE=InnoDB;
 
 -- Email verification tokens
@@ -98,6 +105,27 @@ CREATE TABLE IF NOT EXISTS todos (
   INDEX idx_completed (user_id, completed),
   INDEX idx_due_date (user_id, due_date),
   INDEX idx_priority (user_id, priority)
+) ENGINE=InnoDB;
+
+-- Invitations table
+CREATE TABLE IF NOT EXISTS invitations (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  inviter_id INT NOT NULL,
+  group_owner_id INT NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  token_hash VARCHAR(255) NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  used BOOLEAN DEFAULT FALSE,
+  can_manage BOOLEAN DEFAULT FALSE,
+  perm_create_tasks BOOLEAN NOT NULL DEFAULT TRUE,
+  perm_edit_tasks BOOLEAN NOT NULL DEFAULT TRUE,
+  perm_delete_tasks BOOLEAN NOT NULL DEFAULT TRUE,
+  perm_assign_tasks BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (inviter_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (group_owner_id) REFERENCES users(id) ON DELETE CASCADE,
+  INDEX idx_token_hash (token_hash),
+  INDEX idx_group_owner_id (group_owner_id)
 ) ENGINE=InnoDB;
 
 -- Cleanup procedure for expired tokens (optional - can be run via cron)

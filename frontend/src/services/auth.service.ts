@@ -8,7 +8,20 @@ export interface User {
   email_verified: boolean;
   role: string;
   enabled: boolean;
+  group_owner_id: number | null;
+  group_can_manage: boolean;
+  perm_create_tasks: boolean;
+  perm_edit_tasks: boolean;
+  perm_delete_tasks: boolean;
+  perm_assign_tasks: boolean;
   created_at: string;
+}
+
+export interface TaskPermissions {
+  permCreateTasks: boolean;
+  permEditTasks: boolean;
+  permDeleteTasks: boolean;
+  permAssignTasks: boolean;
 }
 
 export interface LoginCredentials {
@@ -22,6 +35,35 @@ export interface RegisterData {
   password: string;
   firstName?: string;
   lastName?: string;
+  inviteToken?: string;
+}
+
+export interface GroupMember {
+  id: number;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  group_can_manage: boolean;
+  created_at: string;
+}
+
+export interface PendingInvite {
+  id: number;
+  email: string;
+  canManage: boolean;
+  permCreateTasks: boolean;
+  permEditTasks: boolean;
+  permDeleteTasks: boolean;
+  permAssignTasks: boolean;
+  expiresAt: string;
+  createdAt: string;
+}
+
+export interface GroupInfo {
+  owner: User;
+  members: User[];
+  pendingInvites: PendingInvite[];
+  canManage: boolean;
 }
 
 export interface AuthResponse {
@@ -88,6 +130,30 @@ export const authService = {
 
   async changePassword(currentPassword: string, newPassword: string): Promise<{ message: string }> {
     const response = await api.post('/auth/change-password', { currentPassword, newPassword });
+    return response.data;
+  },
+
+  async sendInvite(
+    email: string,
+    canManage: boolean,
+    taskPermissions: TaskPermissions
+  ): Promise<{ message: string }> {
+    const response = await api.post('/auth/invite', { email, canManage, ...taskPermissions });
+    return response.data;
+  },
+
+  async checkInvite(token: string): Promise<{ email: string; inviterName: string }> {
+    const response = await api.get(`/auth/invite/${token}`);
+    return response.data;
+  },
+
+  async getGroupInfo(): Promise<GroupInfo> {
+    const response = await api.get<GroupInfo>('/auth/group');
+    return response.data;
+  },
+
+  async removeGroupMember(userId: number): Promise<{ message: string }> {
+    const response = await api.delete(`/auth/group/members/${userId}`);
     return response.data;
   },
 

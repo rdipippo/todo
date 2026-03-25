@@ -10,6 +10,12 @@ export interface User {
   email_verified: boolean;
   role: string;
   enabled: boolean;
+  group_owner_id: number | null;
+  group_can_manage: boolean;
+  perm_create_tasks: boolean;
+  perm_edit_tasks: boolean;
+  perm_delete_tasks: boolean;
+  perm_assign_tasks: boolean;
   created_at: Date;
   updated_at: Date;
 }
@@ -30,6 +36,12 @@ export interface UserPublic {
   email_verified: boolean;
   role: string;
   enabled: boolean;
+  group_owner_id: number | null;
+  group_can_manage: boolean;
+  perm_create_tasks: boolean;
+  perm_edit_tasks: boolean;
+  perm_delete_tasks: boolean;
+  perm_assign_tasks: boolean;
   created_at: Date;
 }
 
@@ -98,6 +110,12 @@ export const UserModel = {
       email_verified: user.email_verified,
       role: user.role,
       enabled: user.enabled,
+      group_owner_id: user.group_owner_id,
+      group_can_manage: user.group_can_manage,
+      perm_create_tasks: user.perm_create_tasks,
+      perm_edit_tasks: user.perm_edit_tasks,
+      perm_delete_tasks: user.perm_delete_tasks,
+      perm_assign_tasks: user.perm_assign_tasks,
       created_at: user.created_at,
     };
   },
@@ -123,5 +141,33 @@ export const UserModel = {
       [role, userId]
     );
     return result.affectedRows > 0;
+  },
+
+  async setGroupOwner(
+    userId: number,
+    ownerId: number | null,
+    canManage: boolean,
+    permCreateTasks: boolean = true,
+    permEditTasks: boolean = true,
+    permDeleteTasks: boolean = true,
+    permAssignTasks: boolean = true
+  ): Promise<boolean> {
+    const [result] = await pool.execute<ResultSetHeader>(
+      `UPDATE users
+       SET group_owner_id = ?, group_can_manage = ?,
+           perm_create_tasks = ?, perm_edit_tasks = ?,
+           perm_delete_tasks = ?, perm_assign_tasks = ?
+       WHERE id = ?`,
+      [ownerId, canManage, permCreateTasks, permEditTasks, permDeleteTasks, permAssignTasks, userId]
+    );
+    return result.affectedRows > 0;
+  },
+
+  async findGroupMembers(groupOwnerId: number): Promise<User[]> {
+    const [rows] = await pool.execute<RowDataPacket[]>(
+      'SELECT * FROM users WHERE group_owner_id = ? ORDER BY created_at ASC',
+      [groupOwnerId]
+    );
+    return rows as User[];
   },
 };

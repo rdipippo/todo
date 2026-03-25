@@ -13,3 +13,6 @@ export type { Todo, CreateTodoData, UpdateTodoData } from './todo.model';
 
 export { CategoryModel } from './category.model';
 export type { Category, CreateCategoryData, UpdateCategoryData } from './category.model';
+
+export { InvitationModel } from './invitation.model';
+export type { Invitation, InvitationPermissions } from './invitation.model';

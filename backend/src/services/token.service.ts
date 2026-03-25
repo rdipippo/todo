@@ -5,6 +5,8 @@ import {
   RefreshTokenModel,
   EmailVerificationTokenModel,
   PasswordResetTokenModel,
+  InvitationModel,
+  InvitationPermissions,
 } from '../models';
 
 export interface JwtPayload {
@@ -117,6 +119,52 @@ export const TokenService = {
 
   async markPasswordResetTokenAsUsed(tokenId: number): Promise<void> {
     await PasswordResetTokenModel.markAsUsed(tokenId);
+  },
+
+  async generateInvitationToken(
+    inviterId: number,
+    groupOwnerId: number,
+    email: string,
+    permissions: InvitationPermissions
+  ): Promise<string> {
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenHash = this.hashToken(token);
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+    await InvitationModel.create(inviterId, groupOwnerId, email, tokenHash, expiresAt, permissions);
+
+    return token;
+  },
+
+  async verifyInvitationToken(token: string): Promise<{
+    invitationId: number;
+    inviterId: number;
+    groupOwnerId: number;
+    email: string;
+    canManage: boolean;
+    permCreateTasks: boolean;
+    permEditTasks: boolean;
+    permDeleteTasks: boolean;
+    permAssignTasks: boolean;
+  } | null> {
+    const tokenHash = this.hashToken(token);
+    const invitation = await InvitationModel.findByTokenHash(tokenHash);
+
+    if (!invitation) return null;
+    if (invitation.used) return null;
+    if (new Date(invitation.expires_at) < new Date()) return null;
+
+    return {
+      invitationId: invitation.id,
+      inviterId: invitation.inviter_id,
+      groupOwnerId: invitation.group_owner_id,
+      email: invitation.email,
+      canManage: invitation.can_manage,
+      permCreateTasks: invitation.perm_create_tasks,
+      permEditTasks: invitation.perm_edit_tasks,
+      permDeleteTasks: invitation.perm_delete_tasks,
+      permAssignTasks: invitation.perm_assign_tasks,
+    };
   },
 
   hashToken(token: string): string {

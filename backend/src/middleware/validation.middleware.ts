@@ -190,3 +190,13 @@ export const updateCategoryValidation = [
     .withMessage('Color must be a valid hex color (e.g. #ff0000)'),
   handleValidationErrors,
 ];
+
+export const inviteValidation = [
+  body('email').isEmail().withMessage('Please provide a valid email address').normalizeEmail(),
+  body('canManage').optional().isBoolean().withMessage('canManage must be a boolean'),
+  body('permCreateTasks').optional().isBoolean().withMessage('permCreateTasks must be a boolean'),
+  body('permEditTasks').optional().isBoolean().withMessage('permEditTasks must be a boolean'),
+  body('permDeleteTasks').optional().isBoolean().withMessage('permDeleteTasks must be a boolean'),
+  body('permAssignTasks').optional().isBoolean().withMessage('permAssignTasks must be a boolean'),
+  handleValidationErrors,
+];
