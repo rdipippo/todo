@@ -1,4 +1,4 @@
-export { authMiddleware, optionalAuthMiddleware, adminMiddleware, superAdminMiddleware } from './auth.middleware';
+export { authMiddleware, optionalAuthMiddleware, adminMiddleware, superAdminMiddleware, canManageMiddleware } from './auth.middleware';
 export type { AuthRequest } from './auth.middleware';
 
 export {
@@ -20,4 +20,5 @@ export {
   reorderTodosValidation,
   createCategoryValidation,
   updateCategoryValidation,
+  inviteValidation,
 } from './validation.middleware';

@@ -100,6 +100,49 @@ export const EmailService = {
     }
   },
 
+  async sendInvitationEmail(email: string, token: string, inviterName: string): Promise<boolean> {
+    const inviteUrl = `${config.appUrl}/register?inviteToken=${token}`;
+
+    try {
+      await transporter.sendMail({
+        from: config.email.from,
+        to: email,
+        subject: `${inviterName} invited you to join their task list`,
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
+              <h1 style="color: white; margin: 0; font-size: 24px;">You've Been Invited!</h1>
+            </div>
+            <div style="background: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
+              <p style="font-size: 16px;"><strong>${inviterName}</strong> has invited you to join their task list and collaborate together.</p>
+              <p style="font-size: 16px;">Click the button below to create your account and get started.</p>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${inviteUrl}" style="background: #4F46E5; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Accept Invitation</a>
+              </div>
+              <p style="font-size: 14px; color: #6b7280;">If the button doesn't work, copy and paste this link into your browser:</p>
+              <p style="font-size: 14px; color: #4F46E5; word-break: break-all;">${inviteUrl}</p>
+              <p style="font-size: 14px; color: #6b7280; margin-top: 30px;">This invitation will expire in 7 days.</p>
+              <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
+              <p style="font-size: 12px; color: #9ca3af; text-align: center;">If you didn't expect this invitation, you can safely ignore this email.</p>
+            </div>
+          </body>
+          </html>
+        `,
+        text: `${inviterName} has invited you to join their task list.\n\nClick this link to create your account:\n\n${inviteUrl}\n\nThis invitation will expire in 7 days.\n\nIf you didn't expect this invitation, you can safely ignore this email.`,
+      });
+      return true;
+    } catch (error) {
+      console.error('Failed to send invitation email:', error);
+      return false;
+    }
+  },
+
   async verifyConnection(): Promise<boolean> {
     try {
       await transporter.verify();

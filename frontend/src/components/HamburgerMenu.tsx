@@ -50,6 +50,11 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ user, onLogout }) 
     navigate('/admin');
   };
 
+  const handleInvite = () => {
+    setIsOpen(false);
+    navigate('/invite');
+  };
+
   const handleLogout = () => {
     setIsOpen(false);
     onLogout();
@@ -77,6 +82,9 @@ export const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ user, onLogout }) 
           <div className="menu-divider" />
           <button className="menu-item" onClick={handleCategories}>
             {t('categories.manageLink')}
+          </button>
+          <button className="menu-item" onClick={handleInvite}>
+            {t('invite.menuItem')}
           </button>
           {(user.role === 'admin' || user.role === 'super_admin') && (
             <button className="menu-item" onClick={handleAdmin}>

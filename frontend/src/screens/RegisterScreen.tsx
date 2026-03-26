@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
 import { Button, Input, PasswordInput, Alert } from '../components';
 import { AxiosError } from 'axios';
-import { ApiError } from '../services';
+import { ApiError, authService } from '../services';
 
 export const RegisterScreen: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { register } = useAuth();
 
+  const [inviteToken, setInviteToken] = useState<string | null>(null);
+  const [inviterName, setInviterName] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -22,6 +25,19 @@ export const RegisterScreen: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const token = searchParams.get('inviteToken');
+    if (token) {
+      authService.checkInvite(token).then((data) => {
+        setInviteToken(token);
+        setInviterName(data.inviterName);
+        setFormData((prev) => ({ ...prev, email: data.email }));
+      }).catch(() => {
+        setError(t('errors.invalidToken'));
+      });
+    }
+  }, [searchParams, t]);
 
   const updateField = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -77,6 +93,7 @@ export const RegisterScreen: React.FC = () => {
         password: formData.password,
         firstName: formData.firstName || undefined,
         lastName: formData.lastName || undefined,
+        inviteToken: inviteToken || undefined,
       });
       setSuccess(true);
     } catch (err) {
@@ -104,7 +121,9 @@ export const RegisterScreen: React.FC = () => {
             <h1>{t('register.title')}</h1>
           </div>
 
-          <Alert type="success">{t('register.success')}</Alert>
+          <Alert type="success">
+            {inviteToken ? t('invite.sharedAccess') : t('register.success')}
+          </Alert>
 
           <Button fullWidth onClick={() => navigate('/login')}>
             {t('login.submit')}
@@ -124,6 +143,10 @@ export const RegisterScreen: React.FC = () => {
           <h1>{t('register.title')}</h1>
           <p>{t('register.subtitle')}</p>
         </div>
+
+        {inviterName && (
+          <Alert type="success">{t('invite.invitedBy', { name: inviterName })}</Alert>
+        )}
 
         {error && <Alert type="error">{error}</Alert>}
 
@@ -164,6 +187,7 @@ export const RegisterScreen: React.FC = () => {
               error={errors.email}
               autoComplete="email"
               autoCapitalize="none"
+              disabled={!!inviteToken}
             />
           </div>
 
