@@ -32,10 +32,13 @@ frontend/*~
 backend/*~
 
 # OS files
+.DS_Store
 frontend/.DS_Store
 backend/.DS_Store
 frontend/Thumbs.db
 backend/Thumbs.db
+._*
+**/._.DS_Store
 
 # Environment variables
 frontend/.env
